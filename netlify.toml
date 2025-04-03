@@ -7,3 +7,6 @@ publish = "dist/pokemon-ssr/browser"
   from = "/*"
   status = 200
   to = "/index.html"
+
+[[plugins]]
+  package = "@netlify/angular-runtime"
