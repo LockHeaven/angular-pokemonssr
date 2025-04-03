@@ -1,6 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine, isMainModule } from '@angular/ssr/node';
-import { render } from '@netlify/angular-runtime/common-engine.mjs';
 import express from 'express';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,13 +23,6 @@ const commonEngine = new CommonEngine();
  * });
  * ```
  */
-
-export async function netlifyCommonEngineHandler(
-  request: Request,
-  context: any
-): Promise<Response> {
-  return await render(commonEngine);
-}
 
 /**
  * Serve static files from /browser
