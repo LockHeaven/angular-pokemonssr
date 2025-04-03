@@ -2,3 +2,8 @@
 command = "ng build"
 functions = "netlify/functions"
 publish = "dist/pokemon-ssr/browser"
+
+[[redirects]]
+  from = "/*"
+  status = 200
+  to = "/index.html"
