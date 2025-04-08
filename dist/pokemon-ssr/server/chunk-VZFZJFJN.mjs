@@ -1,2 +1,0 @@
-import './polyfills.server.mjs';
-import{H as m,M as r,m as p,yb as n}from"./chunk-2BKJQ3VQ.mjs";var s=class t{http=r(n);loadPage(o){return o!=0&&--o,o=Math.max(0,o),this.http.get(`https://pokeapi.co/api/v2/pokemon?offset=${o*20}&limit=20`).pipe(p(e=>e.results.map(i=>({id:i.url.split("/").at(-2)??"",name:i.name}))))}loadPokemon(o){return this.http.get(`https://pokeapi.co/api/v2/pokemon/${o}`)}static \u0275fac=function(e){return new(e||t)};static \u0275prov=m({token:t,factory:t.\u0275fac,providedIn:"root"})};export{s as a};

@@ -2,6 +2,7 @@ import {
   ApplicationRef,
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   OnDestroy,
   OnInit,
@@ -14,17 +15,17 @@ import { PokemonListComponent } from '../../pokemons/components/pokemon-list/pok
 import { PokemonListSkeletonComponent } from './ui/pokemon-list-skeleton/pokemon-list-skeleton.component';
 import { PokemonService } from '../../pokemons/services/pokemon.service';
 import { SimplePokemon } from '../../pokemons/interfaces';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map, tap } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'pokemons-page',
-  imports: [PokemonListComponent, PokemonListSkeletonComponent],
+  imports: [PokemonListComponent, PokemonListSkeletonComponent, RouterLink],
   templateUrl: './pokemons-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class PokemonsPageComponent implements OnInit {
+export default class PokemonsPageComponent {
   private pokemonService = inject(PokemonService);
   public pokemons = signal<SimplePokemon[]>([]);
 
@@ -33,8 +34,8 @@ export default class PokemonsPageComponent implements OnInit {
   private title = inject(Title);
 
   public currentPage = toSignal<number>(
-    this.route.queryParamMap.pipe(
-      map((params) => params.get('page') ?? '1'),
+    this.route.params.pipe(
+      map((params) => params['page'] ?? '1'),
       map((page) => (isNaN(+page) ? 1 : +page)),
       map((page) => Math.max(1, page))
     )
@@ -48,23 +49,26 @@ export default class PokemonsPageComponent implements OnInit {
   //   console.log(isStable);
   // });
 
-  ngOnInit(): void {
-    console.log(this.currentPage());
-    this.loadPokemons();
-    // setTimeout(() => {
-    //   this.isLoading.set(true);
-    // }, 5000);
-  }
+  // ngOnInit(): void {
+  //   console.log(this.currentPage());
+  //   this.loadPokemons();
+  //   // setTimeout(() => {
+  //   //   this.isLoading.set(true);
+  //   // }, 5000);
+  // }
+
+  public loadOnPageChanged = effect(() => {
+    this.loadPokemons(this.currentPage());
+  });
 
   public loadPokemons(page = 0) {
-    const pageToLoad = this.currentPage()! + page;
     this.pokemonService
-      .loadPage(pageToLoad)
+      .loadPage(page)
       .pipe(
         tap(() => {
-          this.router.navigate([], { queryParams: { page: pageToLoad } });
-          this.title.setTitle(`Pokemons Page: ${pageToLoad}`);
-          this.pokemons.set([]);
+          // this.router.navigate([], { : { page: pageToLoad } });
+          // this.pokemons.set([]);
+          this.title.setTitle(`Pokemons Page: ${page}`);
         })
       )
       .subscribe((pokemons) => {
